@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interactif - Test de Connaissances</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: #3d4656;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+            color: white;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+            background: #667eea;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .login-btn {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .welcome-screen h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-screen p {
+            font-size: 18px;
+            color: #a0aec0;
+            margin-bottom: 40px;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 30px;
+            transition: all 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: #667eea;
+            transform: scale(1.2);
+        }
+
+        .footer-text {
+            margin-top: 30px;
+            color: #718096;
+            font-size: 14px;
+        }
+
+        /* Quiz Screen */
+        .quiz-screen {
+            display: none;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .quiz-title {
+            font-size: 18px;
+            color: #a0aec0;
+        }
+
+        .exit-btn {
+            background: #718096;
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .exit-btn:hover {
+            background: #4a5568;
+        }
+
+        .progress-section {
+            margin-bottom: 30px;
+        }
+
+        .question-counter {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .question-section {
+            margin: 40px 0;
+        }
+
+        .question-section h2 {
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        .question-text {
+            font-size: 20px;
+            margin-bottom: 30px;
+            color: #e2e8f0;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .option.selected {
+            background: #667eea;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #48bb78;
+            border-color: #48bb78;
+            animation: pulse 0.5s;
+        }
+
+        .option.incorrect {
+            background: #f56565;
+            border-color: #f56565;
+            animation: shake 0.5s;
+        }
+
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .skip-btn {
+            background: transparent;
+            border: none;
+            color: #a0aec0;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .skip-btn:hover {
+            color: white;
+        }
+
+        .submit-btn, .next-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover, .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .results-screen h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .results-screen .subtitle {
+            color: #a0aec0;
+            margin-bottom: 40px;
+            font-size: 18px;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+
+        .score-circle svg {
+            transform: rotate(-90deg);
+        }
+
+        .score-circle circle {
+            fill: none;
+            stroke-width: 15;
+        }
+
+        .circle-bg {
+            stroke: rgba(255, 255, 255, 0.1);
+        }
+
+        .circle-progress {
+            stroke: #667eea;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            color: #a0aec0;
+            font-size: 16px;
+            margin-bottom: 8px;
+            font-weight: normal;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .stat-value.correct {
+            color: #48bb78;
+        }
+
+        .stat-value.incorrect {
+            color: #f56565;
+        }
+
+        .results-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .restart-btn, .view-answers-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .view-answers-btn {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .restart-btn:hover, .view-answers-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .welcome-screen h1 {
+                font-size: 32px;
+            }
+
+            .options {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .results-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">📝</div>
+                <span>Quiz Interactif</span>
+            </div>
+            <button class="login-btn" onclick="alert('Fonctionnalité de connexion à venir!')">👤 Login</button>
+        </div>
+
+        <!-- Welcome Screen -->
+        <div class="welcome-screen" id="welcomeScreen">
+            <h1>Welcome to the Knowledge Quiz!</h1>
+            <p>Test your knowledge and see how you rank against others.</p>
+            <button class="start-btn" onclick="startQuiz()">Start quiz</button>
+            
+            <div class="social-icons">
+                <a href="#" onclick="alert('Facebook')">📘</a>
+                <a href="#" onclick="alert('Instagram')">📷</a>
+                <a href="#" onclick="alert('Twitter')">🐦</a>
+            </div>
+            <p class="footer-text">© 2025 Quiz Interactif, all rights reserved</p>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div class="quiz-screen" id="quizScreen">
+            <div class="quiz-header">
+                <div class="quiz-title">General Knowledge Challenge</div>
+                <button class="exit-btn" onclick="exitQuiz()">Exit</button>
+            </div>
+
+            <div class="progress-section">
+                <div class="question-counter">
+                    <span>Question <span id="currentQ">1</span> of <span id="totalQ">20</span></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div class="question-section">
+                <h2>Question <span id="questionNumber">1</span> :</h2>
+                <p class="question-text" id="questionText"></p>
+                <div class="options" id="optionsContainer"></div>
+            </div>
+
+            <div class="quiz-controls">
+                <button class="skip-btn" onclick="skipQuestion()">Skip Question</button>
+                <button class="submit-btn" id="submitBtn" onclick="submitAnswer()" disabled>Submit Answer</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="results-screen" id="resultsScreen">
+            <h1>Quiz Complete!</h1>
+            <p class="subtitle">Great Job! here's how you did</p>
+
+            <div class="score-circle">
+                <svg width="200" height="200">
+                    <circle class="circle-bg" cx="100" cy="100" r="85"></circle>
+                    <circle class="circle-progress" id="scoreCircle" cx="100" cy="100" r="85" 
+                            stroke-dasharray="534" stroke-dashoffset="534"></circle>
+                </svg>
+                <div class="score-text" id="scorePercent">0%</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>Correct Answer</h3>
+                    <div class="stat-value correct" id="correctCount">0</div>
+                </div>
+                <div class="stat-item">
+                    <h3>Incorrect Answer</h3>
+                    <div class="stat-value incorrect" id="incorrectCount">0</div>
+                </div>
+                <div class="stat-item">
+                    <h3>Completion Time</h3>
+                    <div class="stat-value" id="completionTime">00:00</div>
+                </div>
+                <div class="stat-item">
+                    <h3>Total Question</h3>
+                    <div class="stat-value" id="totalQuestions">20</div>
+                </div>
+            </div>
+
+            <div class="results-buttons">
+                <button class="restart-btn" onclick="restartQuiz()">Restart Quiz</button>
+                <button class="view-answers-btn" onclick="alert('Fonctionnalité de révision des réponses à venir!')">View Answers</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // FONCTIONNALITÉS PRINCIPALES DU QUIZ
+        // ========================================
+
+        // 📊 BASE DE DONNÉES DES QUESTIONS HTML
+        const questionsDB = [
+            {
+                question: "What does HTML stand for?",
+                options: ["HyperText Markup Language", "Hyper Transfer Markup Language", "HighText Machine Learning", "Hyperlink Text Management Language"],
+                correct: 0
+            },
+            {
+                question: "Which HTML tag is used to define the title of a document?",
+                options: ["<head>", "<title>", "<meta>", "<header>"],
+                correct: 1
+            },
+            {
+                question: "Which tag is used to create a hyperlink in HTML?",
+                options: ["<link>", "<href>", "<a>", "<hyperlink>"],
+                correct: 2
+            },
+            {
+                question: "What is the correct HTML element for inserting a line break?",
+                options: ["<break>", "<lb>", "<br>", "<newline>"],
+                correct: 2
+            },
+            {
+                question: "Which attribute is used to specify an image source in HTML?",
+                options: ["href", "src", "link", "url"],
+                correct: 1
+            },
+            {
+                question: "What is the correct HTML for making a checkbox?",
+                options: ['<input type="check">', '<input type="checkbox">', '<checkbox>', '<check>'],
+                correct: 1
+            },
+            {
+                question: "Which HTML tag is used to define an unordered list?",
+                options: ["<ol>", "<list>", "<ul>", "<li>"],
+                correct: 2
+            },
+            {
+                question: "What is the correct HTML element for the largest heading?",
+                options: ["<heading>", "<h6>", "<head>", "<h1>"],
+                correct: 3
+            },
+            {
+                question: "Which character is used to indicate an end tag in HTML?",
+                options: ["*", "/", "\\", "^"],
+                correct: 1
+            },
+            {
+                question: "What is the correct HTML for creating a text input field?",
+                options: ['<textfield>', '<input type="textfield">', '<input type="text">', '<textinput>'],
+                correct: 2
+            },
+            {
+                question: "Which HTML tag is used to define a table row?",
+                options: ["<table>", "<tr>", "<td>", "<row>"],
+                correct: 1
+            },
+            {
+                question: "What does CSS stand for?",
+                options: ["Creative Style Sheets", "Cascading Style Sheets", "Computer Style Sheets", "Colorful Style Sheets"],
+                correct: 1
+            },
+            {
+                question: "Which HTML attribute specifies an alternate text for an image?",
+                options: ["title", "alt", "src", "longdesc"],
+                correct: 1
+            },
+            {
+                question: "Which HTML element defines the footer for a document?",
+                options: ["<bottom>", "<section>", "<footer>", "<foot>"],
+                correct: 2
+            },
+            {
+                question: "What is the correct HTML for making a drop-down list?",
+                options: ["<input type='list'>", "<list>", "<select>", "<dropdown>"],
+                correct: 2
+            },
+            {
+                question: "Which HTML tag is used to define an internal style sheet?",
+                options: ["<style>", "<css>", "<script>", "<styles>"],
+                correct: 0
+            },
+            {
+                question: "Which HTML element is used to specify a header for a document or section?",
+                options: ["<head>", "<top>", "<header>", "<section>"],
+                correct: 2
+            },
+            {
+                question: "What is the correct HTML element for playing audio files?",
+                options: ["<sound>", "<audio>", "<mp3>", "<media>"],
+                correct: 1
+            },
+            {
+                question: "Which doctype is correct for HTML5?",
+                options: ["<!DOCTYPE html>", "<!DOCTYPE HTML5>", "<!DOCTYPE HTML PUBLIC>", "<DOCTYPE>"],
+                correct: 0
+            },
+            {
+                question: "Which HTML element is used to define important text?",
+                options: ["<i>", "<important>", "<b>", "<strong>"],
+                correct: 3
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let selectedOption = null;
+        let startTime;
+
+        // ========================================
+        // 1️⃣ AFFICHER LES QUESTIONS
+        // ========================================
+        function loadQuestion() {
+            const question = questionsDB[currentQuestion];
+            
+            // Afficher le numéro et texte de la question
+            document.getElementById('questionNumber').textContent = currentQuestion + 1;
+            document.getElementById('questionText').textContent = question.question;
+            
+            // Mettre à jour la progression
+            const progress = ((currentQuestion + 1) / questionsDB.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            // Créer les options (3-4 choix)
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            selectedOption = null;
+            
+            question.options.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectOption(index);
+                optionsContainer.appendChild(optionDiv);
+            });
+        }
+
+        // ========================================
+        // 2️⃣ VÉRIFIER LES RÉPONSES
+        // ========================================
+        function submitAnswer() {
+            if (selectedOption === null) return;
+            
+            const question = questionsDB[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            
+            // Vérifier si la réponse est correcte ou incorrecte
+            const isCorrect = selectedOption === question.correct;
+            
+            if (isCorrect) {
+                score++;
+                options[selectedOption].classList.add('correct'); // Vert ✓
+            } else {
+                options[selectedOption].classList.add('incorrect'); // Rouge ✗
+                options[question.correct].classList.add('correct'); // Afficher la bonne réponse
+            }
+            
+            // Désactiver les options après validation
+            options.forEach(opt => opt.classList.add('disabled'));
+            
+            // Changer le bouton en "Next"
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.textContent = 'Next Question';
+            submitBtn.onclick = nextQuestion;
+        }
+
+        // ========================================
+        // 3️⃣ PASSER À LA QUESTION SUIVANTE
+        // ========================================
+        function nextQuestion() {
+            currentQuestion++;
+            
+            if (currentQuestion < questionsDB.length) {
+                loadQuestion();
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.textContent = 'Submit Answer';
+                submitBtn.onclick = submitAnswer;
+                submitBtn.disabled = true;
+            } else {
+                showResults(); // Fin du quiz
+            }
+        }
+
+        // ========================================
+        // 4️⃣ AFFICHER LE SCORE FINAL
+        // ========================================
+        function showResults() {
+            document.getElementById('quizScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.display = 'block';
+            
+            // Calculer le score en pourcentage
+            const percentage = Math.round((score / questionsDB.length) * 100);
+            const incorrectAnswers = questionsDB.length - score;
+            
+            // Afficher les statistiques
+            document.getElementById('scorePercent').textContent = percentage + '%';
+            document.getElementById('correctCount').textContent = score;
+            document.getElementById('incorrectCount').textContent = incorrectAnswers;
+            document.getElementById('totalQuestions').textContent = questionsDB.length;
+            
+            // Calculer le temps de complétion
+            const totalTime = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(totalTime / 60);
+            const seconds = totalTime % 60;
+            document.getElementById('completionTime').textContent = 
+                `${minutes.toString().padStart(2, '0')}.${seconds.toString().padStart(2, '0')}`;
+            
+            // Animer le cercle de progression
+            const circumference = 2 * Math.PI * 85;
+            const offset = circumference - (percentage / 100) * circumference;
+            setTimeout(() => {
+                document.getElementById('scoreCircle').style.strokeDashoffset = offset;
+            }, 100);
+        }
+
+        // ========================================
+        // 5️⃣ RECOMMENCER LE QUIZ
+        // ========================================
+        function restartQuiz() {
+            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('welcomeScreen').style.display = 'block';
+            
+            // Réinitialiser toutes les variables
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('scoreCircle').style.strokeDashoffset = 534;
+        }
+
+        // ========================================
+        // FONCTIONS AUXILIAIRES
+        // ========================================
+        
+        function startQuiz() {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('quizScreen').style.display = 'block';
+            currentQuestion = 0;
+            score = 0;
+            startTime = Date.now();
+            loadQuestion();
+        }
+
+        function selectOption(index) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+            selectedOption = index;
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        function skipQuestion() {
+            nextQuestion();
+        }
+
+        function exitQuiz() {
+            if (confirm('Êtes-vous sûr de vouloir quitter le quiz?')) {
+                restartQuiz();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interface</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="left">
+            <i class="fa-solid fa-circle-user"></i>
+            <span>General Knowledge Challenge</span>
+        </div>
+    </header>
+
+    <main class="quiz-container">
+
+        <div class="quiz-progress">
+            <span>Question <span id="currentQ">1</span> of <span id="totalQ">20</span></span>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 0%;" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="answers">
+            <h2>Question <span id="questionNumber">1</span> :</h2>
+            <p class="question-text" id="questionText"></p>
+            <div class="options" id="optionsContainer"></div>
+        </div>
+
+        <div class="bottom">
+            <a href="#" class="skip" id="skipBtn">Skip Question</a>
+            <button class="submit-btn" id="submitBtn">Submit Answer</button>
+        </div>
+
+        <h2 id="result" style="text-align:center; margin-top:20px;"></h2>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
